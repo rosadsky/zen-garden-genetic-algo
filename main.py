@@ -65,10 +65,10 @@ def chod_vpravo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y):
         chod_vpravo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y)
     elif(y == 0 and array[x][y] != 0):
         return False
-    elif(x + 1 < pos_x and y < pos_y and array[x+1][y-1] == 0):
+    elif(x + 1 < pos_x and y < pos_y and x + 1 > 0 and y > 0 and array[x+1][y-1] == 0):
         print("ELIF 1")
         zacni_hrabat(x+1,y-1,cislo_genu,0,jedinec,pos_x,pos_y)
-    elif(x-1 < pos_x and y < pos_y and array[x-1][y-1] == 0):
+    elif(x-1 < pos_x and y < pos_y and x-1 > 0 and y > 0 and array[x-1][y-1] == 0):
         print("ELIF 2")
         zacni_hrabat(x-1,y-1,cislo_genu,2,jedinec,pos_x,pos_y)
     else:
@@ -85,10 +85,10 @@ def chod_dole(x,y,cislo_genu,smer,jedinec,pos_x,pos_y):
         chod_dole(x,y,cislo_genu,smer,jedinec,pos_x,pos_y)
     elif (x == 0 and array[x][y] != 0):
         return False
-    elif (x  < pos_x and y+ 1 < pos_y and array[x-1][y + 1] == 0):
+    elif (x  < pos_x and y+ 1 < pos_y and y + 1 > 0 and x > 0 and array[x-1][y + 1] == 0):
         print("ELIF 1 vpravo")
         zacni_hrabat(x - 1, y + 1, cislo_genu, 3, jedinec, pos_x, pos_y)
-    elif (x < pos_x and y - 1 < pos_y and array[x-1][y - 1] == 0):
+    elif (x < pos_x and y - 1 < pos_y and x > 0 and y - 1 > 0 and array[x-1][y - 1] == 0):
         print("ELIF 2")
         zacni_hrabat(x - 1, y - 1, cislo_genu, 1, jedinec, pos_x, pos_y)
     else:
@@ -139,14 +139,14 @@ def main():
 
     global array
     array = [[ 0 for i in range(pos_x)] for j in range(pos_y)]
-    '''
+    ''' 
     for i in range(1):
         print("Insert where to place stone X-riadok Y-stlpec: ")
         x = int(input())
         y = int(input())
         array[x][y] = -1
-    '''
 
+    '''
     print(vytvorenie_kombinacii(11))
 
 
@@ -169,24 +169,21 @@ def main():
         print("")
 
 
-    test_array = [ 0,4,2,3,1,5,6,7,8,9]
-    '''
-    if (vchod < X) pust_chod(vchod, 0, i, 2);
-    else if (vchod < X+Y) pust_chod(X-1, vchod % X, i, 3);
-    else if (vchod < 2 * X + Y) pust_chod((X-1)-(vchod % (X+Y)), Y-1, i, 0);
-    else pust_chod(0, (Y-1)-(vchod % (2 * X+Y)), i, 1);
-    '''
-
     vchod = 16
 
 
+    test_jedinec =  Jedinec(5,[1,2,6,9,17])
+    test_generacia = []
+    test_generacia.append(test_jedinec)
+
+    print("TEST JEDINEC" + str(test_jedinec.gen))
 
 
-    for i in range (5):
-        print("ZADAJ VCHODIK: ")
-        vchod = int(input())
+    for i in range(test_generacia[0].pocet_genov):
+        print("VCHOD: " + str(vchod))
+        vchod = test_generacia[0].gen[i]
         print("GENERACIA: ")
-        cislo_genu = int(input())
+        cislo_genu = test_generacia[0].gen[i]
         if(vchod < pos_x):
             print("vchod")
             print(array[0][vchod])
@@ -207,7 +204,9 @@ def main():
 
         for i in range(pos_x):
             for j in range(pos_y):
-                print(array[i][j],end= "")
+                print(array[i][j],end= " ")
+                if(array[i][j]< 9):
+                    print("",end=" ")
                 #print("]i: " + str(i) + " j: " + str(j) + " [",end= "")
             print("")
 
