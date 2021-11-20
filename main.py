@@ -1,7 +1,7 @@
 import random
 
 global array
-global test_generacia
+global generacia
 pos_x = 0
 pos_y = 0
 
@@ -42,7 +42,7 @@ def chod_vlavo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cis
         array[x][y] = cislo_hrabania
         print(array[x][y])
         y -= 1
-        test_generacia[cislo_generacie].fitnes += 1
+        generacia[cislo_generacie].fitnes += 1
         chod_vlavo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     elif(y == pos_y-1 and array[x][y] != 0 or y == 0):
         return jedinec
@@ -57,7 +57,7 @@ def chod_vpravo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,ci
     if (x < pos_x and y < pos_y and array[x][y] == 0):
         array[x][y] = cislo_hrabania
         y += 1
-        test_generacia[cislo_generacie].fitnes += 1
+        generacia[cislo_generacie].fitnes += 1
         chod_vpravo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     elif(y == 0 and array[x][y] != 0):
         return jedinec
@@ -73,7 +73,7 @@ def chod_dole(x,y,cislo_genu,smer,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrab
     if(x < pos_x and y < pos_y and array[x][y] == 0):
         array[x][y] = cislo_hrabania
         x += 1
-        test_generacia[cislo_generacie].fitnes +=1
+        generacia[cislo_generacie].fitnes +=1
         chod_dole(x,y,cislo_genu,smer,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrabania)
     elif (x == 0 and array[x][y] != 0):
         return jedinec
@@ -88,7 +88,7 @@ def chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cisl
     if (x >=0 and y >=0 and array[x][y] == 0):
         array[x][y] = cislo_hrabania
         x -= 1
-        test_generacia[cislo_generacie].fitnes += 1
+        generacia[cislo_generacie].fitnes += 1
         chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     elif (x == pos_x-1 and array[x][y] != 0):
         return jedinec
@@ -108,6 +108,7 @@ def main():
     POCET_JEDINCOV = 10
     POCET_GENERACII = 1
 
+    global generacia
     generacia = []
     najlepsi_jedinec = "";
     kamene = ""
@@ -121,10 +122,14 @@ def main():
     pos_x = int(input())
     pos_y = int(input())
 
-    global test_generacia
-    test_generacia = []
+
     global array
     array = [[ 0 for i in range(pos_x)] for j in range(pos_y)]
+    empty_array = array
+
+    print("empty arr")
+    print(empty_array)
+
     ''' 
     for i in range(1):
         print("Insert where to place stone X-riadok Y-stlpec: ")
@@ -158,46 +163,45 @@ def main():
     vchod = 16
 
 
-    test_jedinec =  Jedinec(5,[0,1,2,3,4])
 
-    test_generacia.append(test_jedinec)
 
-    print("TEST JEDINEC" + str(test_jedinec.gen))
+    #print("TEST JEDINEC" + str(test_jedinec.gen))
 
     cislo_hrabania = 0
 
-    for i in range(test_generacia[0].pocet_genov):
-        print("VCHOD: " + str(vchod))
-        cislo_generacie = 0
-        vchod = test_generacia[0].gen[i]
-        cislo_genu = test_generacia[0].gen[i]
-        cislo_hrabania += 1;
-        if(vchod < pos_x):
-            print(array[0][vchod])
-            print(zacni_hrabat(0,vchod,cislo_genu,0,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
-        elif (vchod < pos_x + pos_y):
-            print(array[vchod%pos_x][pos_x-1])
-            print(zacni_hrabat(vchod%pos_x,pos_x-1,cislo_genu,1,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
-        elif (vchod < 2 * pos_x + pos_y):
-            print(array[pos_y-1][(pos_x-1)-(vchod % (pos_x + pos_y))])
-            print(zacni_hrabat(pos_y-1,(pos_x-1)-(vchod % (pos_x + pos_y)),cislo_genu,2,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
-        else:
-            print(array[(pos_y-1)-(vchod % (2*pos_x+pos_y))][0])
-            print(zacni_hrabat(((pos_y-1)-(vchod % (2*pos_x+pos_y))),0,cislo_genu,3,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
-
-        print("ARRAY AFTER ")
-
-        for i in range(pos_x):
-            for j in range(pos_y):
-                print(array[i][j],end= " ")
-                if(array[i][j]< 9):
-                    print("",end=" ")
-                #print("]i: " + str(i) + " j: " + str(j) + " [",end= "")
-            print("")
+    for cislo_generacie in range(5):
+        print("GENERACIA Č: " + str(cislo_generacie))
+        array = empty_array
+        print(empty_array)
+        print(array)
+        for i in range(generacia[cislo_generacie].pocet_genov):
+            cislo_generacie = cislo_generacie
+            vchod = generacia[cislo_generacie].gen[i]
+            cislo_genu = generacia[cislo_generacie].gen[i]
+            cislo_hrabania += 1;
+            if(vchod < pos_x):
+                print(zacni_hrabat(0,vchod,cislo_genu,0,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
+            elif (vchod < pos_x + pos_y):
+                print(zacni_hrabat(vchod%pos_x,pos_x-1,cislo_genu,1,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
+            elif (vchod < 2 * pos_x + pos_y):
+                print(zacni_hrabat(pos_y-1,(pos_x-1)-(vchod % (pos_x + pos_y)),cislo_genu,2,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
+            else:
+                print(zacni_hrabat(((pos_y-1)-(vchod % (2*pos_x+pos_y))),0,cislo_genu,3,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
 
 
-    print("FINAL")
-    print(test_generacia[0].fitnes)
+            print("ARRAY AFTER ")
+            for i in range(pos_x):
+                for j in range(pos_y):
+                    print(array[i][j],end= " ")
+                    if(array[i][j]< 9):
+                        print("",end=" ")
+                    #print("]i: " + str(i) + " j: " + str(j) + " [",end= "")
+                print("")
+
+        print("FITNESS GEN")
+        print(generacia[cislo_generacie].fitnes)
+    #print("FINAL")
+
 
 
 
