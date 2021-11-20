@@ -45,79 +45,58 @@ def chod_vlavo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cis
         test_generacia[cislo_generacie].fitnes += 1
         chod_vlavo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     elif(y == pos_y-1 and array[x][y] != 0 or y == 0):
-        print("VLAVO FIRST FALSE")
         return jedinec
     elif(x+1 < pos_x and y < pos_y and y > 0 and x+1 > 0 and array[x+1][y+1] == 0):
-        print("ELIF 1")
         zacni_hrabat(x+1,y+1,cislo_genu,0,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrabania)
     elif(x-1< pos_x and y < pos_y and y > 0 and x+1 > 0 and array[x-1][y+1] == 0):
-        print("ELIF 2 vlavo")
         zacni_hrabat(x-1,y+1,cislo_genu,2,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrabania)
     else:
-        print("FALse")
         return jedinec
 
 def chod_vpravo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania):
-    print("VPRAVO")
-    print("X: " + str(x) + "< " + str(pos_x) + "Y: " + str(y) + "< " + str(pos_y))
     if (x < pos_x and y < pos_y and array[x][y] == 0):
         array[x][y] = cislo_hrabania
-        print(array[x][y])
         y += 1
         test_generacia[cislo_generacie].fitnes += 1
         chod_vpravo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     elif(y == 0 and array[x][y] != 0):
         return jedinec
     elif(x + 1 < pos_x and y < pos_y and x + 1 > 0 and y > 0 and array[x+1][y-1] == 0):
-        print("ELIF 1")
         zacni_hrabat(x+1,y-1,cislo_genu,0,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrabania)
     elif(x-1 < pos_x and y < pos_y and x-1 > 0 and y > 0 and array[x-1][y-1] == 0):
-        print("ELIF 2")
         zacni_hrabat(x-1,y-1,cislo_genu,2,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrabania)
     else:
-        print("FALse")
         return jedinec
 
 
 def chod_dole(x,y,cislo_genu,smer,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrabania):
-    print("X: " + str(x) +  "< " + str(pos_x) + "Y: " + str(y) + "< " + str(pos_y))
     if(x < pos_x and y < pos_y and array[x][y] == 0):
         array[x][y] = cislo_hrabania
-        print(array[x][y])
         x += 1
         test_generacia[cislo_generacie].fitnes +=1
         chod_dole(x,y,cislo_genu,smer,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrabania)
     elif (x == 0 and array[x][y] != 0):
         return jedinec
     elif (x  < pos_x and y+ 1 < pos_y and y + 1 > 0 and x > 0 and array[x-1][y + 1] == 0):
-        print("ELIF 1 vpravo")
         zacni_hrabat(x - 1, y + 1, cislo_genu, 3, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     elif (x < pos_x and y - 1 < pos_y and x > 0 and y - 1 > 0 and array[x-1][y - 1] == 0):
-        print("ELIF 2")
         zacni_hrabat(x - 1, y - 1, cislo_genu, 1, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     else:
-        print("FALse ")
         return jedinec
 
 def chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania):
-    print("HORE")
-    print("X: " + str(x) + "< " + str(pos_x) + "Y: " + str(y) + "< " + str(pos_y))
     if (x >=0 and y >=0 and array[x][y] == 0):
         array[x][y] = cislo_hrabania
-        print(array[x][y])
         x -= 1
         test_generacia[cislo_generacie].fitnes += 1
         chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     elif (x == pos_x-1 and array[x][y] != 0):
         return jedinec
     elif (x < pos_x and y + 1 < pos_y and x > 0 and y + 1 > 0 and array[x+1][y + 1] == 0):
-        print("HORE- vpravo")
         zacni_hrabat(x + 1, y + 1, cislo_genu, 3, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     elif (x < pos_x and y - 1 < pos_y and x > 0 and y - 1 > 0 and array[x+1][y-1] == 0):
-        print("HORE - vlavo")
         zacni_hrabat(x + 1, y - 1, cislo_genu, 1, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     else:
-        print("FALse")
         return jedinec
 
 
@@ -191,13 +170,10 @@ def main():
         print("VCHOD: " + str(vchod))
         cislo_generacie = 0
         vchod = test_generacia[0].gen[i]
-        print("GENERACIA: ")
         cislo_genu = test_generacia[0].gen[i]
         cislo_hrabania += 1;
         if(vchod < pos_x):
-            print("vchod")
             print(array[0][vchod])
-            print(("POS X") + str(pos_x))
             print(zacni_hrabat(0,vchod,cislo_genu,0,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
         elif (vchod < pos_x + pos_y):
             print(array[vchod%pos_x][pos_x-1])
@@ -206,7 +182,6 @@ def main():
             print(array[pos_y-1][(pos_x-1)-(vchod % (pos_x + pos_y))])
             print(zacni_hrabat(pos_y-1,(pos_x-1)-(vchod % (pos_x + pos_y)),cislo_genu,2,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
         else:
-            print("ELSE")
             print(array[(pos_y-1)-(vchod % (2*pos_x+pos_y))][0])
             print(zacni_hrabat(((pos_y-1)-(vchod % (2*pos_x+pos_y))),0,cislo_genu,3,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
 
