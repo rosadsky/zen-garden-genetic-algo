@@ -184,6 +184,7 @@ def main():
         for jedinec_iterator in range(POCET_JEDINCOV):
             cislo_hrabania = 0
             array = [[empty_array[x][y] for y in range(len(empty_array[0]))] for x in range(len(empty_array))]
+            generacia[jedinec_iterator].fitnes = 0
             for i in range(generacia[jedinec_iterator].pocet_genov):
                 #cislo_generacie = cislo_generacie
                 vchod = generacia[jedinec_iterator].gen[i]
@@ -214,6 +215,8 @@ def main():
             if (generacia[jedinec_iterator].fitnes == fitnes_goal):
                 print("NAŠLO SA RIEŠENIE  GENERACIA Č: " + str(generacie_iterator) + " FITNESS : " + str(generacia[jedinec_iterator].fitnes))
                 break
+            else:
+
 
 
 
