@@ -106,14 +106,17 @@ def chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cisl
 
 def main():
 
-    POCET_JEDINCOV = 10
-    POCET_GENERACII = 1
+    POCET_JEDINCOV = 5
+    POCET_GENERACII = 2
+
+    fitnes_min = -1
+    fitnes_max = 0
 
     global generacia
     generacia = []
     najlepsi_jedinec = "";
     kamene = ""
-    fitnes_goal = ""
+    fitnes_goal = 0
 
     pocet_genov = 11
 
@@ -124,6 +127,7 @@ def main():
     pos_y = int(input())
 
 
+    fitnes_goal = pos_x * pos_y
     global array
     array = [[ 0 for i in range(pos_x)] for j in range(pos_y)]
 
@@ -140,7 +144,7 @@ def main():
         array[x][y] = -1
 
     '''
-    print(vytvorenie_kombinacii(11))
+    #print(vytvorenie_kombinacii(11))
 
 
     for g in range(POCET_JEDINCOV):
@@ -149,7 +153,7 @@ def main():
 
 
 
-    for populacia in range(POCET_GENERACII):
+    for populacia in range(1):
         for jedinec in generacia:
             print(jedinec.gen)
 
@@ -171,39 +175,54 @@ def main():
 
     cislo_hrabania = 0
 
-    for cislo_generacie in range(10):
-        print("GENERACIA Č: " + str(cislo_generacie))
+    for generacie_iterator in range(POCET_GENERACII):
+        print("GENERACIA Č: " + str(generacie_iterator))
         print(empty_array)
         print(array)
-        cislo_hrabania = 0
-        array = [[empty_array[x][y] for y in range(len(empty_array[0]))] for x in range(len(empty_array))]
-
-        for i in range(generacia[cislo_generacie].pocet_genov):
-            cislo_generacie = cislo_generacie
-            vchod = generacia[cislo_generacie].gen[i]
-            cislo_genu = generacia[cislo_generacie].gen[i]
-            cislo_hrabania += 1;
-            if(vchod < pos_x):
-                print(zacni_hrabat(0,vchod,cislo_genu,0,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
-            elif (vchod < pos_x + pos_y):
-                print(zacni_hrabat(vchod%pos_x,pos_x-1,cislo_genu,1,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
-            elif (vchod < 2 * pos_x + pos_y):
-                print(zacni_hrabat(pos_y-1,(pos_x-1)-(vchod % (pos_x + pos_y)),cislo_genu,2,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
-            else:
-                print(zacni_hrabat(((pos_y-1)-(vchod % (2*pos_x+pos_y))),0,cislo_genu,3,generacia[0],pos_x,pos_y,cislo_generacie,cislo_hrabania))
 
 
-            print("ARRAY AFTER ")
-            for i in range(pos_x):
-                for j in range(pos_y):
-                    print(array[i][j],end= " ")
-                    if(array[i][j]< 9):
-                        print("",end=" ")
-                    #print("]i: " + str(i) + " j: " + str(j) + " [",end= "")
-                print("")
+        for jedinec_iterator in range(POCET_JEDINCOV):
+            cislo_hrabania = 0
+            array = [[empty_array[x][y] for y in range(len(empty_array[0]))] for x in range(len(empty_array))]
+            for i in range(generacia[jedinec_iterator].pocet_genov):
+                #cislo_generacie = cislo_generacie
+                vchod = generacia[jedinec_iterator].gen[i]
+                cislo_genu = generacia[jedinec_iterator].gen[i]
+                cislo_hrabania += 1;
+                if(vchod < pos_x):
+                    print(zacni_hrabat(0,vchod,cislo_genu,0,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania))
+                elif (vchod < pos_x + pos_y):
+                    print(zacni_hrabat(vchod%pos_x,pos_x-1,cislo_genu,1,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania))
+                elif (vchod < 2 * pos_x + pos_y):
+                    print(zacni_hrabat(pos_y-1,(pos_x-1)-(vchod % (pos_x + pos_y)),cislo_genu,2,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania))
+                else:
+                    print(zacni_hrabat(((pos_y-1)-(vchod % (2*pos_x+pos_y))),0,cislo_genu,3,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania))
 
-        print("FITNESS GEN")
-        print(generacia[cislo_generacie].fitnes)
+
+                print("ARRAY AFTER ")
+                for i in range(pos_x):
+                    for j in range(pos_y):
+                        print(array[i][j],end= " ")
+                        if(array[i][j]< 9):
+                            print("",end=" ")
+                        #print("]i: " + str(i) + " j: " + str(j) + " [",end= "")
+                    print("")
+
+
+
+
+            if (generacia[jedinec_iterator].fitnes == fitnes_goal):
+                print("NAŠLO SA RIEŠENIE  GENERACIA Č: " + str(generacie_iterator) + " FITNESS : " + str(generacia[jedinec_iterator].fitnes))
+                break
+
+
+
+
+
+
+            print("FITNESS GEN")
+            print("GENERACIA NUM: " +  str(jedinec_iterator))
+            print("genfit: " + str(generacia[jedinec_iterator].fitnes))
     #print("FINAL")
 
 
