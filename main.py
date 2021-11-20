@@ -1,5 +1,6 @@
 import random
 
+
 global array
 global generacia
 pos_x = 0
@@ -125,7 +126,8 @@ def main():
 
     global array
     array = [[ 0 for i in range(pos_x)] for j in range(pos_y)]
-    empty_array = array
+
+    empty_array = [[array[x][y] for y in range(len(array[0]))] for x in range(len(array))]
 
     print("empty arr")
     print(empty_array)
@@ -169,11 +171,13 @@ def main():
 
     cislo_hrabania = 0
 
-    for cislo_generacie in range(5):
+    for cislo_generacie in range(10):
         print("GENERACIA Č: " + str(cislo_generacie))
-        array = empty_array
         print(empty_array)
         print(array)
+        cislo_hrabania = 0
+        array = [[empty_array[x][y] for y in range(len(empty_array[0]))] for x in range(len(empty_array))]
+
         for i in range(generacia[cislo_generacie].pocet_genov):
             cislo_generacie = cislo_generacie
             vchod = generacia[cislo_generacie].gen[i]
@@ -202,6 +206,12 @@ def main():
         print(generacia[cislo_generacie].fitnes)
     #print("FINAL")
 
+
+    print("FINALL PRINT")
+
+    for i in range(len(generacia)):
+        print(generacia[i].gen)
+        print(generacia[i].fitnes)
 
 
 
