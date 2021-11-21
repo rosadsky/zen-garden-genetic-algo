@@ -37,7 +37,7 @@ def zacni_hrabat(x,y,cislo_genu,smer,jedinec,pos_x,pos_y,cislo_generacie,cislo_h
 
 def chod_vlavo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania):
     #print("X: " + str(x) + "< " + str(pos_x) + "Y: " + str(y) + "< " + str(pos_y))
-
+    #print("VLAVO x " + str(x) + "y " + str(y) + "h " + str(cislo_hrabania))
 
     if (x >=0 and y >=0 and x < pos_x and y < pos_y and array[x][y] == 0):
         array[x][y] = cislo_hrabania
@@ -63,12 +63,13 @@ def chod_vlavo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cis
                         generacia[cislo_generacie].fitnes -= 1
 
 def chod_vpravo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania):
+    #print("VPRAVO x " + str(x) + "y " + str(y) + "h " + str(cislo_hrabania))
     if (x < pos_x and y < pos_y and array[x][y] == 0):
         array[x][y] = cislo_hrabania
         y += 1
         generacia[cislo_generacie].fitnes += 1
         chod_vpravo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
-    elif(y == 0 and array[x][y] != 0):
+    elif(y == 0 and x < pos_x and array[x][y] != 0):
         return jedinec
     elif(x + 1 < pos_x and y < pos_y and x + 1 >= 0 and y >= 0 and array[x+1][y-1] == 0):
         zacni_hrabat(x+1,y-1,cislo_genu,0,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrabania)
@@ -111,21 +112,23 @@ def chod_dole(x,y,cislo_genu,smer,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrab
                         generacia[cislo_generacie].fitnes -= 1
 
 def chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania):
-    if (x >=0 and y >=0 and array[x][y] == 0):
+    if (x >=0 and y >=0 and x < pos_x and y < pos_y and array[x][y] == 0):
         array[x][y] = cislo_hrabania
         x -= 1
         generacia[cislo_generacie].fitnes += 1
         chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     elif (x == pos_x-1 and array[x][y] != 0):
         return jedinec
-    elif (x < pos_x and y + 1 < pos_y and x >= 0 and y + 1 >= 0 and array[x+1][y + 1] == 0):
+    elif (x + 1 < pos_x and y + 1 < pos_y and x >= 0 and y + 1 >= 0 and array[x+1][y + 1] == 0):
         zacni_hrabat(x + 1, y + 1, cislo_genu, 3, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
-    elif (x < pos_x and y - 1 < pos_y and x >= 0 and y - 1 >= 0 and array[x+1][y-1] == 0):
+    elif (x + 1 < pos_x and y - 1 < pos_y and x >= 0 and y - 1 >= 0 and array[x+1][y-1] == 0):
         zacni_hrabat(x + 1, y - 1, cislo_genu, 1, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania)
     else:
         if (x - 1 < 0 or y == pos_y-1 or y == 0):
             pass
+            #print("JE TO OK " + str(cislo_hrabania))
         else:
+            #print("VRACAT HORE " + str(cislo_hrabania))
             for x in range(pos_x):
                 for y in range(pos_y):
                     if (array[x][y] == cislo_hrabania):
@@ -134,18 +137,28 @@ def chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cisl
 
 
 def vyber_zaciatok_koniec(POCET_JEDINCOV,pocet_genov):
-    for d in range(int(POCET_JEDINCOV/2)):
-        for r in range(pocet_genov):
+    for jedinec_index in range(int(POCET_JEDINCOV/2)):
+        for geny in range(pocet_genov):
             #TODO prepísať 100
+            flag_selekcia = False
             if(random.randint(0,100) < 100):
-                generacia[POCET_JEDINCOV- d - 1].gen[r] = generacia[d].gen[r]
+                for kontrola in range(pocet_genov):
+                    if(generacia[POCET_JEDINCOV- jedinec_index - 1].gen[geny] == generacia[jedinec_index].gen[kontrola]):
+                        #print("FLAG")
+                        flag_selekcia = True
+                        break
+
+                if flag_selekcia == False:
+                    #print("GEN PR: " + str(generacia[d].gen) + " GEN " + str( generacia[POCET_JEDINCOV- d - 1].gen[r]) )
+                    generacia[jedinec_index].gen[geny] = generacia[POCET_JEDINCOV- jedinec_index - 1].gen[geny]
+                    #print("GEN PO: " + str(generacia[d].gen))
 
 
 
 
 def main():
 
-    POCET_JEDINCOV = 100
+    POCET_JEDINCOV =100
     POCET_GENERACII = 1500
     ODKIAL_MUTOVAT = 2
     MUTACIA_PRAVDEPODOBNOST = 100
@@ -163,13 +176,15 @@ def main():
 
     #VSTUP
 
-    print("Insert size of garden:")
+    print("Insert size of garden: X- riadky Y- stlpce")
     pos_x = int(input())
     pos_y = int(input())
 
 
     global array
-    array = [[ 0 for i in range(pos_x)] for j in range(pos_y)]
+    array = [[ 0 for x in range(pos_y)] for y in range(pos_x)]
+
+    print(array)
 
     print("Insert number of stones: ")
     number_of_stones = int(input())
@@ -208,9 +223,9 @@ def main():
 
     print("ARRAY")
 
-    for i in range(pos_x):
-        for j in range(pos_y):
-            print(array[i][j],end= "")
+    for x in range(len(array)):
+        for y in range(len(array[0])):
+            print(array[x][y],end= "")
             #print("]i: " + str(i) + " j: " + str(j) + " [",end= "")
         print("")
 
@@ -224,6 +239,8 @@ def main():
 
     cislo_hrabania = 0
     najdene_riesenie = False
+    najlepsie_riesenie_fitnes = 0
+    najlepsie_riesenie_geny = []
 
     for generacie_iterator in range(POCET_GENERACII):
 
@@ -245,14 +262,15 @@ def main():
                 #vchod = int(input())
                 #cislo_genu = vchod
                 cislo_hrabania += 1;
-                if(vchod < pos_x):
+                if(vchod < pos_y):
                     zacni_hrabat(0,vchod,cislo_genu,0,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania)
                 elif (vchod < pos_x + pos_y):
-                    zacni_hrabat(vchod%pos_x,pos_x-1,cislo_genu,1,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania)
+                    zacni_hrabat(vchod%pos_y,pos_y-1,cislo_genu,1,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania)
                 elif (vchod < 2 * pos_x + pos_y):
-                    zacni_hrabat(pos_y-1,(pos_x-1)-(vchod % (pos_x + pos_y)),cislo_genu,2,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania)
+                    zacni_hrabat(pos_x-1,(pos_y-1)-(vchod % (pos_x + pos_y)),cislo_genu,2,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania)
                 else:
-                    zacni_hrabat(((pos_y-1)-(vchod % (2*pos_x+pos_y))),0,cislo_genu,3,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania)
+                    zacni_hrabat(((pos_x-1)-(vchod % (2*pos_x+pos_y))),0,cislo_genu,3,generacia[jedinec_iterator],pos_x,pos_y,jedinec_iterator,cislo_hrabania)
+
 
                 ''' 
                 print("ARRAY PO ")
@@ -268,6 +286,11 @@ def main():
 
             if(fitnes_max < generacia[jedinec_iterator].fitnes):
                 fitnes_max = generacia[jedinec_iterator].fitnes
+                if fitnes_max > najlepsie_riesenie_fitnes:
+                    najlepsie_riesenie_fitnes = generacia[jedinec_iterator].fitnes
+                    najlepsie_riesenie_geny = generacia[jedinec_iterator].gen
+                    najlepšie_riesenie_generacia = generacie_iterator
+
 
             if (generacia[jedinec_iterator].fitnes == fitnes_goal):
                 najdene_riesenie = True
@@ -322,6 +345,12 @@ def main():
             #print("JEDINEC NUM: " +  str(jedinec_iterator) + " genfit: " + str(sorted_generation[jedinec_iterator].fitnes))
         print("GENERACIA: " + str(generacie_iterator) + " FITNES MAX: " + str(fitnes_max))
 
+    print("---------------------------------------------------")
+    print("NAJLEPŠIE RIEŠENIE BOLO:")
+    print("FITNESS: "+ str(najlepsie_riesenie_fitnes))
+    print("CHYBALO POHRABAŤ " + str((fitnes_goal - najlepsie_riesenie_fitnes)))
+    print("GENY: " + str(najlepsie_riesenie_geny))
+    print("GENERACIA: " + str(najlepšie_riesenie_generacia))
 
 
 
