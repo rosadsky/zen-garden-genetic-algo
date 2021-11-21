@@ -274,14 +274,15 @@ def main():
         #print(empty_array)
         #print(array)
         fitnes_max = 0
-        fitnes_min = -1
+        fitnes_min = 999999
         if najdene_riesenie:
             break
-
+        priemer = 0
         for jedinec_iterator in range(POCET_JEDINCOV):
             cislo_hrabania = 0
             array = [[empty_array[x][y] for y in range(len(empty_array[0]))] for x in range(len(empty_array))]
             generacia[jedinec_iterator].fitnes = 0
+
             for i in range(generacia[jedinec_iterator].pocet_genov):
                 #cislo_generacie = cislo_generacie
                 vchod = generacia[jedinec_iterator].gen[i]
@@ -318,6 +319,11 @@ def main():
                     najlepsie_riesenie_geny = generacia[jedinec_iterator].gen
                     najlepšie_riesenie_generacia = generacie_iterator
 
+            if (fitnes_min > generacia[jedinec_iterator].fitnes):
+                fitnes_min = generacia[jedinec_iterator].fitnes
+
+            #priemer
+            priemer += generacia[jedinec_iterator].fitnes
 
             if (generacia[jedinec_iterator].fitnes == fitnes_goal):
                 najdene_riesenie = True
@@ -353,9 +359,6 @@ def main():
 
                 # mutacia druhej polky jedincov ak sme zadali 2
 
-
-
-
                 for mutovanie in range(int(mutovanie_iter)):
                     if (random.randint(0, 100) < MUTACIA_PRAVDEPODOBNOST):
                         prvy = random.randint(0, pocet_genov - 1)
@@ -370,7 +373,7 @@ def main():
                         #print("PO MUTACII: " + str(generacia[mutovanie].gen[prvy]) + " DRUHY: " + str(generacia[mutovanie].gen[druhy]))
 
             #print("JEDINEC NUM: " +  str(jedinec_iterator) + " genfit: " + str(sorted_generation[jedinec_iterator].fitnes))
-        print("GENERACIA: " + str(generacie_iterator) + " FITNES MAX: " + str(fitnes_max))
+        print("GENERACIA: " + str(generacie_iterator) + " FITNES MAX: " + str(fitnes_max) + " FITNES MIN: " + str(fitnes_min) + " PRIEMER: " + str(int(priemer/POCET_JEDINCOV)))
 
     print("---------------------------------------------------")
     print("NAJLEPŠIE RIEŠENIE BOLO:")
