@@ -139,12 +139,11 @@ def chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cisl
                         generacia[cislo_generacie].fitnes -= 1
 
 
-def vyber_zaciatok_koniec(POCET_JEDINCOV,pocet_genov):
+def vyber_zaciatok_koniec(POCET_JEDINCOV,pocet_genov,PRAVDEPODOBNOST_KRIZENIE):
     for jedinec_index in range(int(POCET_JEDINCOV/2)):
         for geny in range(pocet_genov):
-            #TODO prepísať 100
             flag_selekcia = False
-            if(random.randint(0,100) < 100):
+            if(random.randint(0,100) < PRAVDEPODOBNOST_KRIZENIE):
                 for kontrola in range(pocet_genov):
                     if(generacia[POCET_JEDINCOV- jedinec_index - 1].gen[geny] == generacia[jedinec_index].gen[kontrola]):
                         #print("FLAG")
@@ -203,6 +202,7 @@ def main():
     ODKIAL_MUTOVAT = 2
     MUTACIA_PRAVDEPODOBNOST = 100
     PRAVDEPODOBNOST_CROSSOVER = 50
+    PRAVDEPODOBNOST_KRIZENIE = 100
 
     fitnes_min = -1
     fitnes_max = 0
@@ -225,11 +225,16 @@ def main():
     global array
     array = [[ 0 for x in range(pos_y)] for y in range(pos_x)]
 
-    print("Select selection Tournamnet or ")
+    print("Select selection  [ 1 ] Tournamnet [ 2 ] Strongest-Weakness ")
+    input_algo = int(input())
+
+    if input_algo == 1:
+        tournament = True
+    else:
+        tournament = False
 
     print("Insert number of stones: ")
     number_of_stones = int(input())
-
 
 
     pocet_genov = int((2 * pos_x + 2 * pos_y)/2 + number_of_stones)
@@ -343,7 +348,7 @@ def main():
                 else:
                     sorted_generation = sorted(generacia, key=lambda x: x.fitnes, reverse=True)
                     generacia = sorted_generation
-                    vyber_zaciatok_koniec(POCET_JEDINCOV,pocet_genov)
+                    vyber_zaciatok_koniec(POCET_JEDINCOV,pocet_genov,PRAVDEPODOBNOST_KRIZENIE)
 
 
                 # mutacia druhej polky jedincov ak sme zadali 2
