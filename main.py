@@ -20,6 +20,7 @@ def vytvorenie_kombinacii(velkost_generacie,pos_y,pos_x):
     #print(array_generacie)
     return random.sample(range(1, 2 * pos_x + 2 * pos_y ),velkost_generacie)
 
+
 def zacni_hrabat(x,y,cislo_genu,smer,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrabania):
 
     if (smer == 0):
@@ -61,6 +62,7 @@ def chod_vlavo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cis
                     if (array[x][y] == cislo_hrabania):
                         array[x][y] = 0
                         generacia[cislo_generacie].fitnes -= 1
+
 
 def chod_vpravo(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania):
     #print("VPRAVO x " + str(x) + "y " + str(y) + "h " + str(cislo_hrabania))
@@ -111,6 +113,7 @@ def chod_dole(x,y,cislo_genu,smer,jedinec,pos_x,pos_y,cislo_generacie,cislo_hrab
                         array[x][y] = 0
                         generacia[cislo_generacie].fitnes -= 1
 
+
 def chod_hore(x, y, cislo_genu, smer, jedinec, pos_x, pos_y,cislo_generacie,cislo_hrabania):
     if (x >=0 and y >=0 and x < pos_x and y < pos_y and array[x][y] == 0):
         array[x][y] = cislo_hrabania
@@ -150,21 +153,60 @@ def vyber_zaciatok_koniec(POCET_JEDINCOV,pocet_genov):
 
                 if flag_selekcia == False:
                     #print("GEN PR: " + str(generacia[d].gen) + " GEN " + str( generacia[POCET_JEDINCOV- d - 1].gen[r]) )
-                    generacia[jedinec_index].gen[geny] = generacia[POCET_JEDINCOV- jedinec_index - 1].gen[geny]
+                    generacia[jedinec_index].gen[geny] = generacia[POCET_JEDINCOV - jedinec_index - 1].gen[geny]
                     #print("GEN PO: " + str(generacia[d].gen))
 
 
+def tournament_selection(generacia,pocet_genov,POCET_JEDINCOV):
+
+
+    tournament_array = []
+
+    for i in range(POCET_JEDINCOV):
+        random_id = int(random.randint(0,POCET_JEDINCOV-1))
+       # print("GEN RANDOM FITNESS:" + str(generacia[random_id].fitnes) + " RANDOM ID: " + str(random_id))
+        tournament_array.append(generacia[random_id])
+
+
+    fittest = tournament_array[0];
+
+    for max in tournament_array:
+        if(fittest.fitnes < max.fitnes):
+            fittest = max
+
+
+   # print("BEST FIT " + str(fittest.fitnes))
+    return fittest
+
+
+def crossover(PRAVDEPODOBNOST_CROSSOVER,individual_1,indivual_2,pocet_genov):
+    sample_array =  [0] * pocet_genov
+    new_jedinec = Jedinec(0,sample_array)
+
+    for i in range(pocet_genov):
+        #print("I: " + str(i))
+        if random.randint(0,100) <= PRAVDEPODOBNOST_CROSSOVER:
+            new_jedinec.gen[i] = individual_1.gen[i]
+        else:
+            new_jedinec.gen[i] = indivual_2.gen[i]
+
+    return new_jedinec
 
 
 def main():
 
-    POCET_JEDINCOV =100
+    #### NASTAVENIE ALGORITMU
+
+
+    POCET_JEDINCOV = 65
     POCET_GENERACII = 1500
     ODKIAL_MUTOVAT = 2
     MUTACIA_PRAVDEPODOBNOST = 100
+    PRAVDEPODOBNOST_CROSSOVER = 50
 
     fitnes_min = -1
     fitnes_max = 0
+
 
     global generacia
     generacia = []
@@ -172,8 +214,7 @@ def main():
     kamene = ""
     fitnes_goal = 0
 
-
-
+    tournament = True
     #VSTUP
 
     print("Insert size of garden: X- riadky Y- stlpce")
@@ -184,12 +225,14 @@ def main():
     global array
     array = [[ 0 for x in range(pos_y)] for y in range(pos_x)]
 
-    print(array)
+    print("Select selection Tournamnet or ")
 
     print("Insert number of stones: ")
     number_of_stones = int(input())
 
-    pocet_genov = pos_x + pos_y + number_of_stones
+
+
+    pocet_genov = int((2 * pos_x + 2 * pos_y)/2 + number_of_stones)
     fitnes_goal = pos_x * pos_y - number_of_stones
 
 
@@ -201,41 +244,20 @@ def main():
 
     empty_array = [[array[x][y] for y in range(len(array[0]))] for x in range(len(array))]
 
-    print("empty arr")
-    print(empty_array)
-
-
-
-
-
-    #print(vytvorenie_kombinacii(11))
-
 
     for g in range(POCET_JEDINCOV):
         generacia.append(Jedinec(pocet_genov,vytvorenie_kombinacii(pocet_genov,pos_y,pos_x)))
         #print(generacia[g].gen)
 
 
-
-    for populacia in range(1):
-        for jedinec in generacia:
-            print(jedinec.gen)
-
-    print("ARRAY")
-
     for x in range(len(array)):
         for y in range(len(array[0])):
-            print(array[x][y],end= "")
+            print(array[x][y],end= " ")
             #print("]i: " + str(i) + " j: " + str(j) + " [",end= "")
         print("")
 
 
     vchod = 16
-
-
-
-
-    #print("TEST JEDINEC" + str(test_jedinec.gen))
 
     cislo_hrabania = 0
     najdene_riesenie = False
@@ -295,7 +317,7 @@ def main():
             if (generacia[jedinec_iterator].fitnes == fitnes_goal):
                 najdene_riesenie = True
                 print("NAŠLO SA RIEŠENIE  GENERACIA Č: " + str(generacie_iterator) + " FITNESS : " + str(generacia[jedinec_iterator].fitnes))
-                print("ARRAY AFTER ")
+                print("VÝSLEDNÉ POHRABANÉ POLE ")
                 for i in range(pos_x):
                     for j in range(pos_y):
                         print(array[i][j], end=" ")
@@ -305,24 +327,28 @@ def main():
                     print("")
                 break
             else:
-                # print("GENERACIA Č: " + str(generacie_iterator))
-
-                sorted_generation = sorted(generacia, key=lambda x: x.fitnes, reverse=True)
-
-                generacia = sorted_generation
-                #print("SORTED LIST ")
-
-                #for i in sorted_generation:
-                #    print(i.fitnes)
-
                 # sortnuta generácia
                 new_generation = []
                 mutovanie_iter = POCET_JEDINCOV / ODKIAL_MUTOVAT
 
-                vyber_zaciatok_koniec(POCET_JEDINCOV,pocet_genov)
+                if (tournament):
+                   for i in range(POCET_JEDINCOV):
+                       individual1 = tournament_selection(generacia,pocet_genov,POCET_JEDINCOV)
+                       individual2 = tournament_selection(generacia,pocet_genov,POCET_JEDINCOV)
+                       new_individual = crossover(PRAVDEPODOBNOST_CROSSOVER,individual1, individual2,pocet_genov)
+                       new_generation.append(new_individual)
+                   array = new_generation
+                   sorted_generation = sorted(generacia, key=lambda x: x.fitnes, reverse=True)
+                   generacia = sorted_generation
+                else:
+                    sorted_generation = sorted(generacia, key=lambda x: x.fitnes, reverse=True)
+                    generacia = sorted_generation
+                    vyber_zaciatok_koniec(POCET_JEDINCOV,pocet_genov)
 
 
                 # mutacia druhej polky jedincov ak sme zadali 2
+
+
 
 
                 for mutovanie in range(int(mutovanie_iter)):
@@ -336,10 +362,6 @@ def main():
                         generacia[mutovanie].gen[prvy] = generacia[mutovanie].gen[druhy]
                         generacia[mutovanie].gen[druhy] = prehodenie
 
-
-
-
-
                         #print("PO MUTACII: " + str(generacia[mutovanie].gen[prvy]) + " DRUHY: " + str(generacia[mutovanie].gen[druhy]))
 
             #print("JEDINEC NUM: " +  str(jedinec_iterator) + " genfit: " + str(sorted_generation[jedinec_iterator].fitnes))
@@ -351,8 +373,6 @@ def main():
     print("CHYBALO POHRABAŤ " + str((fitnes_goal - najlepsie_riesenie_fitnes)))
     print("GENY: " + str(najlepsie_riesenie_geny))
     print("GENERACIA: " + str(najlepšie_riesenie_generacia))
-
-
 
 
 if __name__ == '__main__':
